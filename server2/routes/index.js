@@ -5,7 +5,13 @@ var fs = require('fs');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Data-Logger' });
+  var port = req.socket.localPort;
+  port = port % 3000;
+    
+  res.render('index', { 
+    title: 'Data-Logger',
+    serverMessage: "You are in the server " + port 
+  });
 });
 
 router.get('/record', function(req, res, next) {
@@ -31,7 +37,7 @@ fs.stat(logfile_name, function(err, stat) {
 
 
   //res.render('index', { title: 'Express' });
-  res.send("Saving: "+req.query.id_nodo+';'+now.getTime()+";"+req.query.temperatura+";"+req.query.humedad+";"+req.query.co2+";"+req.query.volatiles+" in: "+logfile_name);
+  res.send("You are in the server " + port + "Saving: "+req.query.id_nodo+';'+now.getTime()+";"+req.query.temperatura+";"+req.query.humedad+";"+req.query.co2+";"+req.query.volatiles+" in: "+logfile_name);
 });
 
 function append2file (file2append, content){
