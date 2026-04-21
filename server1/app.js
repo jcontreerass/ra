@@ -4,59 +4,81 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var serveIndex = require('serve-index');
+const mqtt = require('mqtt');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
 
-app.post('/api/datos', (req, res) => {
-    const datosRecibidos = req.body;
-    
-    console.log('Datos recibidos:', datosRecibidos);
+// Configuración MQTT
+const mqttClient = mqtt.connect('mqtt://localhost');
 
-    res.status(201).json({
-        mensaje: "Datos recibidos correctamente",
-        data: datosRecibidos
-    });
+mqttClient.on('connect', () => {
+    console.log('Connected to Mosquitto broker');
 });
 
-// view engine setup
+mqttClient.on('error', (err) => {
+    console.error('MQTT Connection error:', err);
+});
+
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// Middleware
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/logs', serveIndex(path.join(__dirname, 'public/logs'))); // shows you the file list
-app.use('/logs', express.static(path.join(__dirname, 'public/logs'))); // serve the actual files
+// API Endpoint para sensores
+app.post('/api/datos', (req, res) => {
+    const data = req.body;
 
-//to include images
-// app.use('/images', express.static('images'));
+    // Publicar cada clave del JSON en un tópico distinto
+    Object.keys(data).forEach((key) => {
+        const topic = `sensores/${key}`;
+        const payload = data[key].toString();
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+        mqttClient.publish(topic, payload, { qos: 1 }, (err) => {
+            if (err) {
+                console.error(`Failed to publish to ${topic}`, err);
+            }
+        });
+    });
+
+    console.log('Data routed to MQTT topics:', data);
+
+    res.status(201).json({
+        status: "success",
+        delivered: data
+    });
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// Routes
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/logs', serveIndex(path.join(__dirname, 'public/logs')));
+app.use('/logs', express.static(path.join(__dirname, 'public/logs')));
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+// Catch 404
+app.use(function(req, res, next) {
+    next(createError(404));
+});
+
+// Error handler
+app.use(function(err, req, res, next) {
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 app.listen(3000, () => {
-  console.log(`Server is running`);
+    console.log('Server listening on port 3000');
 });
 
 module.exports = app;
