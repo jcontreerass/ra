@@ -54,5 +54,37 @@ echo " HAProxy (PID: $(cat $PID_FILE)) listo."
 echo " Presiona Ctrl + C para detenerlo todo."
 echo "------------------------------------------------"
 
+
+
+# --- FUNCIÓN DE LIMPIEZA (Ctrl+C) ---
+function cleanup {
+    echo -e "\n[!] Deteniendo servicios (requiere permisos)..."
+    sudo systemctl stop mosquitto telegraf
+    echo "[✓] Mosquitto y Telegraf detenidos correctamente."
+    exit 0
+}
+
+# Registrar el trap para capturar Ctrl+C (SIGINT)
+trap cleanup SIGINT
+
+# --- INICIO DE SERVICIOS ---
+echo "[*] Iniciando Mosquitto y Telegraf (requiere permisos)..."
+sudo systemctl start mosquitto telegraf
+
+# Comprobar si se iniciaron correctamente
+if systemctl is-active --quiet mosquitto && systemctl is-active --quiet telegraf; then
+    echo "================================================"
+    echo " 🚀 PUENTE MQTT ACTIVO 🚀"
+    echo "================================================"
+    echo " ✓ Mosquitto (Broker MQTT) ejecutándose."
+    echo " ✓ Telegraf  (Agente de métricas) ejecutándose."
+    echo "================================================"
+    echo " Presiona Ctrl + C para detener los servicios."
+    echo "================================================"
+else
+    echo "[X] Hubo un problema al iniciar los servicios. Revisa los logs con: journalctl -xe"
+    exit 1
+fi
+
 # 4. Mantener el script vivo para que el trap pueda actuar
 wait
