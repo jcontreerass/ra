@@ -1046,3 +1046,30 @@
 1777310794: Sending PINGRESP to Telegraf-Consumer-Fywjk
 1777310859: Received PINGREQ from Telegraf-Consumer-Fywjk
 1777310859: Sending PINGRESP to Telegraf-Consumer-Fywjk
+1777397304: mosquitto version 2.1.2 starting
+1777397304: Config loaded from mosquitto.conf.
+1777397304: Bridge support available.
+1777397304: Persistence support available.
+1777397304: TLS support available.
+1777397304: TLS-PSK support available.
+1777397304: Websockets support available.
+1777397304: Opening ipv4 listen socket on port 1883.
+1777397304: Opening ipv6 listen socket on port 1883.
+1777397304: mosquitto version 2.1.2 running
+1777397315: New connection from ::1:48850 on port 1883.
+1777397315: New client connected from ::1:48850 as Telegraf-Consumer-kmqdJ (p4, c1, k60).
+1777397315: No will message specified.
+1777397315: Sending CONNACK to Telegraf-Consumer-kmqdJ (0, 0)
+1777397315: Received SUBSCRIBE from Telegraf-Consumer-kmqdJ
+1777397315: 	sensors/+/temperature (QoS 0)
+1777397315: Telegraf-Consumer-kmqdJ 0 sensors/+/temperature
+1777397315: 	sensors/+/humidity (QoS 0)
+1777397315: Telegraf-Consumer-kmqdJ 0 sensors/+/humidity
+1777397315: 	sensors/+/co2 (QoS 0)
+1777397315: Telegraf-Consumer-kmqdJ 0 sensors/+/co2
+1777397315: 	sensors/+/voc (QoS 0)
+1777397315: Telegraf-Consumer-kmqdJ 0 sensors/+/voc
+1777397315: Sending SUBACK to Telegraf-Consumer-kmqdJ
+1777397361: mosquitto version 2.1.2 terminating
+1777397361: Saving in-memory database to ./data//mosquitto.db.
+1777397361: Error saving in-memory database, unable to open ./data//mosquitto.db.new for writing, error No such file or directory
