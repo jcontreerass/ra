@@ -22,7 +22,7 @@ influxd &
 sleep 5
 telegraf --config telegraf.conf &
 sleep 5
-grafana server --config ../grafana.ini --homepath ../logs/grafana cfg:default.paths.logs=../logs/grafana
+grafana server --config ../grafana.ini --homepath ../logs/grafana/grafana.log cfg:default.paths.logs=../logs/grafana/grafana.log
 
 
 for i in $(seq 1 "$NUM_INSTANCES"); do
