@@ -22,6 +22,8 @@ influxd &
 sleep 5
 telegraf --config telegraf.conf &
 sleep 5
+grafana-server --config ../grafana.ini --homepath ../logs/grafana cfg:default.paths.logs=../logs/grafana
+
 
 for i in $(seq 1 "$NUM_INSTANCES"); do
     PORT=$((8000 + i))
