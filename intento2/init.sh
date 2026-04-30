@@ -22,7 +22,7 @@ influxd &
 sleep 5
 telegraf --config telegraf.conf &
 sleep 5
-grafana server --config ../grafana.ini
+grafana server --config grafana.ini &
 sleep 5
 
 for i in $(seq 1 "$NUM_INSTANCES"); do
