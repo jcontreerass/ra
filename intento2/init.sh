@@ -22,11 +22,9 @@ influxd &
 sleep 5
 telegraf --config telegraf.conf &
 sleep 5
-grafana server --config grafana.ini &
-sleep 5
 
 for i in $(seq 1 "$NUM_INSTANCES"); do
-    PORT=$((8000 + i))
+    PORT=$((8001 + i))
     python3 prox2mqtt.py --port "$PORT" --broker "$BROKER_IP" &
 done
 
