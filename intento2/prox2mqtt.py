@@ -4,10 +4,10 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import paho.mqtt.client as mqtt
 
 # --- REQUISITOS DE SEGURIDAD ---
-# 1. Lista Negra de IPs
+# Lista Negra de IPs
 BLACKLIST_IPS = ["192.168.1.100", "10.0.0.5"]
 
-# 2. Conformado de tráfico: Token Bucket (Máx 10 peticiones, recupera 1 por seg)
+# Token Bucket (Máx 10 peticiones, recupera 1 por segundo)
 MAX_TOKENS = 10
 TOKENS = 10
 REFILL_RATE = 1.0 
@@ -29,7 +29,7 @@ def consume_token():
 class BridgeHandler(BaseHTTPRequestHandler):
     
     def do_GET(self):
-        # --- REQUISITO DE DESCRIPCIÓN: WADL ---
+        # WADL
         if self.path == '/wadl':
             self.send_response(200)
             self.send_header('Content-Type', 'application/xml')
@@ -56,7 +56,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
-        # 1. Comprobar Lista Negra
+        # Comprobar Lista Negra
         client_ip = self.client_address[0]
         if client_ip in BLACKLIST_IPS:
             self.send_response(403)
@@ -64,7 +64,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
             self.wfile.write(b"Forbidden: IP Blocked")
             return
 
-        # 2. Comprobar Token Bucket
+        # Comprobar Token Bucket
         if not consume_token():
             self.send_response(429)
             self.end_headers()
@@ -74,7 +74,7 @@ class BridgeHandler(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         payload = self.rfile.read(content_length)
         
-        # Analizar el path para extraer sede y variable (Ej: /sensors/sede1/temperature)
+        # Analizar el path para extraer sede y variable
         path_parts = self.path.strip('/').split('/')
         if len(path_parts) != 3 or path_parts[0] != 'sensors':
             self.send_response(400)
