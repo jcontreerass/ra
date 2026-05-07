@@ -5,7 +5,7 @@ from influxdb_client import InfluxDBClient
 app = FastAPI(title="Servicio de Datos de Sensores (SOA)")
 
 # --- CONFIGURACIÓN DE INFLUXDB ---
-INFLUX_URL = "http://10.100.0.109:8086"
+INFLUX_URL = "http://127.0.0.1:8086"
 INFLUX_TOKEN = "jg8jrARJ8gTVn6UrpSHDS5XL0us8NBmWqaoz6nN1fvXBqRBDICFxQNXZKvhEdAF18uW19J79OmVJGSo3V6AQUA=="
 INFLUX_ORG = "etsisi"
 INFLUX_BUCKET = "waterdrop"
