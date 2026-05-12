@@ -4,7 +4,7 @@ NUM_INSTANCES=$1
 BROKER_IP=${2:-"localhost"}
 
 if [ -z "$NUM_INSTANCES" ]; then
-    echo "Starting 2 isnstances..."
+    echo "Starting 2 instances..."
     NUM_INSTANCES="2"
 fi
 
@@ -23,7 +23,7 @@ influxd &
 sleep 2
 telegraf --config telegraf.conf &
 sleep 2
-uvicorn api_sensores:app --host 0.0.0.0 --port 8000 &
+uvicorn api_sensores:app --host 0.0.0.0 --port 5000 &
 sleep 2
 
 for i in $(seq 1 "$NUM_INSTANCES"); do
