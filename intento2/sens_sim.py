@@ -4,7 +4,7 @@ import time
 import random
 
 # Configuration
-MIDDLEWARE_URL = "http://localhost:8080" 
+HAPROXY_URL = "http://localhost:8080" 
 SEDES = ["sede1", "sede2", "sede3"]
 VARIABLES = ["temperature", "humidity", "co2", "voc"]
 

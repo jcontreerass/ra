@@ -27,7 +27,6 @@ def consume_token():
     return False
 
 class BridgeHandler(BaseHTTPRequestHandler):
-    
     def do_GET(self):
         # WADL
         if self.path == '/wadl':
