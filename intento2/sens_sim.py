@@ -3,7 +3,6 @@ import json
 import time
 import random
 
-# Configuration
 MIDDLEWARE_URL = "http://localhost:8080" 
 SEDES = ["sede1", "sede2", "sede3"]
 VARIABLES = ["temperature", "humidity", "co2", "voc"]
@@ -23,7 +22,6 @@ def send_data():
     while True:
         for sede in SEDES:
             for var in VARIABLES:
-                # Construct URL based on middleware path logic
                 url = f"{MIDDLEWARE_URL}/sensors/{sede}/{var}"
                 
                 payload = {
@@ -51,11 +49,8 @@ def send_data():
                 except Exception as e:
                     print(f"[CONNECTION ERROR] {e}")
 
-                # Sleep slightly to avoid exhausting the token bucket immediately
-                # The middleware refills 1 token/sec
                 time.sleep(0.5) 
 
-        # Simulate sleep period of the sensor cycle
         print("Sensors entering sleep mode...")
         time.sleep(5)
 

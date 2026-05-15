@@ -28,7 +28,6 @@ def consume_token():
 
 class BridgeHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        # WADL
         if self.path == '/wadl':
             self.send_response(200)
             self.send_header('Content-Type', 'application/xml')

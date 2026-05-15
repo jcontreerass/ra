@@ -10,19 +10,12 @@ INFLUX_TOKEN = "jg8jrARJ8gTVn6UrpSHDS5XL0us8NBmWqaoz6nN1fvXBqRBDICFxQNXZKvhEdAF1
 INFLUX_ORG = "etsisi"
 INFLUX_BUCKET = "waterdrop"
 
-# Conectamos con la base de datos
 client = InfluxDBClient(url=INFLUX_URL, token=INFLUX_TOKEN, org=INFLUX_ORG)
 query_api = client.query_api()
 
-# --- DEFINICIÓN DEL ENDPOINT ---
 @app.get("/api/sensores/actual")
 def obtener_datos_actuales():
-    """
-    Este endpoint consulta InfluxDB y devuelve el último valor registrado 
-    por los sensores en la última hora.
-    """
-    # Consulta en lenguaje Flux: Busca en la última hora y trae solo el último registro (last)
-    # Asumimos que Telegraf guarda los datos bajo la medición "mqtt_consumer"
+
     query = f'''
     from(bucket: "{INFLUX_BUCKET}")
       |> range(start: -1h)
@@ -31,15 +24,13 @@ def obtener_datos_actuales():
     '''
     
     try:
-        # Ejecutamos la consulta
         tablas = query_api.query(query, org=INFLUX_ORG)
         
         resultados = {}
-        # Recorremos los datos devueltos por InfluxDB
         for tabla in tablas:
             for registro in tabla.records:
-                campo = registro.get_field()   # Ej: "temperatura" o "humedad"
-                valor = registro.get_value()   # Ej: 24.5 o 60
+                campo = registro.get_field()   
+                valor = registro.get_value()   
                 resultados[campo] = valor
                 
         if not resultados:
@@ -48,5 +39,5 @@ def obtener_datos_actuales():
         return {"status": "ok", "datos": resultados}
         
     except Exception as e:
-        # Si algo falla (ej. base de datos caída), devolvemos un error 500 limpio
+        # Si falla, error
         raise HTTPException(status_code=500, detail=f"Error consultando la base de datos: {str(e)}")
